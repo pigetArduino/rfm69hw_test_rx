@@ -37,7 +37,7 @@
 // *********** IMPORTANT SETTINGS - YOU MUST CHANGE/ONFIGURE TO FIT YOUR HARDWARE *************
 //*********************************************************************************************
 #define NETWORKID     100  // The same on all nodes that talk to each other
-#define NODEID        2    // The unique identifier of this node
+#define NODEID        1    // The unique identifier of this node
 #define RECEIVER      1    // The recipient of packets
  
 //Match frequency to the hardware version of the radio on your Feather
@@ -45,7 +45,7 @@
 #define FREQUENCY     RF69_868MHZ
 //#define FREQUENCY     RF69_915MHZ
 #define ENCRYPTKEY    "sampleEncryptKey" //exactly the same 16 characters/bytes on all nodes!
-#define IS_RFM69HCW   false // set to 'true' if you are using an RFM69HCW module
+#define IS_RFM69HCW  true // set to 'true' if you are using an RFM69HCW module
  
 //*********************************************************************************************
 #define SERIAL_BAUD   115200
@@ -54,22 +54,26 @@
 #define RFM69_IRQ     2
 #define RFM69_IRQN    0  // Pin 2 is IRQ 0!
 #define RFM69_RST     9
- 
+#define buzzer        3
 #define LED           13  // onboard blinky
  
- 
+
+unsigned long timer = 0;
+unsigned long time_before_alarm = 5 * 1000; //(5sec)
+
 int16_t packetnum = 0;  // packet counter, we increment per xmission
  
 RFM69 radio = RFM69(RFM69_CS, RFM69_IRQ, IS_RFM69HCW, RFM69_IRQN);
  
 void setup() {
-  while (!Serial); // wait until serial console is open, remove if not tethered to computer
+  //while (!Serial); // wait until serial console is open, remove if not tethered to computer
   Serial.begin(SERIAL_BAUD);
  
-  Serial.println("Arduino RFM69HCW Transmitter");
+  Serial.println("Arduino RFM69HW Receiver");
   
   // Hard Reset the RFM module
   pinMode(RFM69_RST, OUTPUT);
+  pinMode(buzzer,OUTPUT);// Définir la sortie du buzzer
   digitalWrite(RFM69_RST, HIGH);
   delay(100);
   digitalWrite(RFM69_RST, LOW);
@@ -85,9 +89,10 @@ void setup() {
   radio.encrypt(ENCRYPTKEY);
   
   pinMode(LED, OUTPUT);
-  Serial.print("\nTransmitting at ");
+  Serial.print("\nReceiving at ");
   Serial.print(FREQUENCY==RF69_433MHZ ? 433 : FREQUENCY==RF69_868MHZ ? 868 : 915);
   Serial.println(" MHz");
+  buzz(100);
 }
  
  
@@ -109,8 +114,12 @@ void loop() {
         radio.sendACK();
         Serial.println(" - ACK sent");
       }
-      Blink(LED, 40, 3); //blink LED 3 times, 40ms between blinks
+      //Blink(LED, 40, 3); //blink LED 3 times, 40ms between blinks
+      timer = millis(); //Reset Timer
     }  
+  }
+  else{
+    checkTimer();    
   }
  
   Serial.flush(); //make sure all serial data is clocked out before sleeping the MCU
@@ -126,3 +135,19 @@ void Blink(byte PIN, byte DELAY_MS, byte loops)
     delay(DELAY_MS);
   }
 }
+
+void buzz(int interval){
+  tone(buzzer, 100); // Send 1KHz sound signal...
+  delay(interval);        // ...for 1 sec
+  noTone(buzzer);     // Stop sound...
+  delay(interval);        // ...for 1sec
+}
+
+void checkTimer(){
+  unsigned long actual_time = millis();
+  if (actual_time  - timer >= time_before_alarm){
+    buzz(100);
+  }
+  
+}
+
