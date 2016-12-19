@@ -10,14 +10,14 @@ Total:
 RFM69 -----
 X
 NSS (Purple) --> D10
-MOSI (Brown) --> (3.3V) --> TX1
-MISO (Green) --> (Nano) --> D12
-SCK (Orange) --> (3.3V) --> RX0
-GND (Black)  --> (3.3V) --> GND
+MOSI (Brown) --> D11
+MISO (Green) --> D12
+SCK (Orange) --> D13
+GND (Black)
 ANA          --> Antenna (8cm cable)
 X
 
-RESET (Yellow) --> RX0
+RESET (Yellow) --> D9
 DI0 (Blue) --> D2
 X
 X
@@ -26,18 +26,6 @@ X
 X
 3.3V
 
-5V / 3.3V ------------
-TX1 --> NSS (Purple)
-RX0 --> RESET (Yellow)
-GND
-LV  --> 3.3V
-RX0 --> SCK (Orange)
-TX1 --> MOSI (Brown)
+Buzzer --> D3
 
-TX0 --> D10 (Purple)
-RX0 --> D9 (Yellow)
-GND
-HV --> 5V
-RX1 --> D13 (Orange)
-TX0 --> D11 (Brown)
 ```
