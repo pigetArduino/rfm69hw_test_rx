@@ -4,7 +4,7 @@
 Total:
 
 # Wiring
-![RFM69_nano](https://github.com/pigetArduino/rfm69hw_test_rx/raw/master/doc/rfm69_minipro3v_wiring.png)
+![RFM69_nano](https://github.com/pigetArduino/rfm69hw_test_rx/raw/master/doc/arduino_minipro3v_rfm69_wiring.png)
 
 ```
 RFM69 -----
